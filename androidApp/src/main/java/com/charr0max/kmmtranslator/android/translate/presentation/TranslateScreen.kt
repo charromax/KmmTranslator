@@ -6,6 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,62 +45,88 @@ import java.util.Locale
 
 @Composable
 fun TranslateScreen(
-    state: TranslateState, onEvent: (TranslateEvent) -> Unit
+    state: TranslateState,
+    onEvent: (TranslateEvent) -> Unit,
 ) {
     val context = LocalContext.current
+
     LaunchedEffect(key1 = state.error) {
         val message = when (state.error) {
-            null -> context.getString(R.string.unknown_error)
             TranslateError.SERVICE_UNAVAILABLE -> context.getString(R.string.service_unavailable)
             TranslateError.CLIENT_ERROR -> context.getString(R.string.client_error)
             TranslateError.SERVER_ERROR -> context.getString(R.string.server_error)
             TranslateError.UNKNOWN_ERROR -> context.getString(R.string.unknown_error)
+            else -> null
         }
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        onEvent(TranslateEvent.OnErrorSeen)
+        message?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            onEvent(TranslateEvent.OnErrorSeen)
+        }
     }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onEvent(TranslateEvent.RecordAudio) },
+                onClick = {
+                    onEvent(TranslateEvent.RecordAudio)
+                },
                 backgroundColor = MaterialTheme.colors.primary,
                 contentColor = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.size(75.dp)
+                modifier = Modifier.size(75.dp),
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.mic),
-                    contentDescription = stringResource(R.string.record_audio)
+                    contentDescription = stringResource(id = R.string.record_audio),
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
-    ) { paddingValues ->
+        floatingActionButtonPosition = FabPosition.Center,
+    ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    LanguageDropDown(language = state.fromLanguage,
+                    LanguageDropDown(
+                        language = state.fromLanguage,
                         isOpen = state.isChoosingFromLanguage,
-                        onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
-                        onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-                        onLanguageSelected = { onEvent(TranslateEvent.ChooseFromLanguage(it)) })
-
-                    SwapLanguagesButton(onClick = { onEvent(TranslateEvent.SwapLanguages) })
-
-                    LanguageDropDown(language = state.toLanguage,
+                        onClick = {
+                            onEvent(TranslateEvent.OpenFromLanguageDropDown)
+                        },
+                        onDismiss = {
+                            onEvent(TranslateEvent.StopChoosingLanguage)
+                        },
+                        onLanguageSelected = {
+                            onEvent(TranslateEvent.ChooseFromLanguage(it))
+                        },
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    SwapLanguagesButton(onClick = {
+                        onEvent(TranslateEvent.SwapLanguages)
+                    })
+                    Spacer(modifier = Modifier.weight(1f))
+                    LanguageDropDown(
+                        language = state.toLanguage,
                         isOpen = state.isChoosingToLanguage,
-                        onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
-                        onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-                        onLanguageSelected = { onEvent(TranslateEvent.ChooseToLanguage(it)) })
+                        onClick = {
+                            onEvent(TranslateEvent.OpenToLanguageDropDown)
+                        },
+                        onDismiss = {
+                            onEvent(TranslateEvent.StopChoosingLanguage)
+                        },
+                        onLanguageSelected = {
+                            onEvent(TranslateEvent.ChooseToLanguage(it))
+                        },
+                    )
                 }
             }
             item {
@@ -119,40 +146,59 @@ fun TranslateScreen(
                     onTextChange = {
                         onEvent(TranslateEvent.ChangeTranslationText(it))
                     },
-                    onCopyClick = {
-                        clipboardManager?.setText(buildAnnotatedString {
-                            append(it)
-                        })
+                    onCopyClick = { text ->
+                        clipboardManager.setText(
+                            buildAnnotatedString {
+                                append(text)
+                            },
+                        )
                         Toast.makeText(
                             context,
-                            context.getString(R.string.copied_to_clipboard),
-                            Toast.LENGTH_SHORT
+                            context.getString(
+                                R.string.copied_to_clipboard,
+                            ),
+                            Toast.LENGTH_LONG,
                         ).show()
                     },
-                    onCloseClick = { onEvent(TranslateEvent.CloseTranslation) },
+                    onCloseClick = {
+                        onEvent(TranslateEvent.CloseTranslation)
+                    },
                     onSpeakerClick = {
                         tts.language = state.toLanguage.toLocale() ?: Locale.ENGLISH
                         tts.speak(
-                            state.toText, TextToSpeech.QUEUE_FLUSH, null, null
+                            state.toText,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            null,
                         )
                     },
                     onTextFieldClick = {
                         onEvent(TranslateEvent.EditTranslation)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
+
             item {
                 if (state.history.isNotEmpty()) {
-                    Text(text = stringResource(R.string.history))
+                    Text(
+                        text = stringResource(
+                            id = R.string.history,
+                        ),
+                        style = MaterialTheme.typography.h2,
+                    )
                 }
             }
+
             items(state.history) { item ->
-                TranslateHistoryItem(item = item, onClick = {
-                    onEvent(TranslateEvent.SelectHistoryItem(item))
-                }, modifier = Modifier.fillMaxWidth())
+                TranslateHistoryItem(
+                    item = item,
+                    onClick = {
+                        onEvent(TranslateEvent.SelectHistoryItem(item))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
-
 }

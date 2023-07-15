@@ -58,7 +58,7 @@ fun TranslateTextField(
     onCloseClick: () -> Unit,
     onSpeakerClick: () -> Unit,
     onTextFieldClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -66,7 +66,7 @@ fun TranslateTextField(
             .clip(RoundedCornerShape(20.dp))
             .gradientSurface()
             .clickable(onClick = onTextFieldClick)
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         AnimatedContent(targetState = toText) { toText ->
             if (toText == null || isTranslating) {
@@ -77,7 +77,7 @@ fun TranslateTextField(
                     onTextChange = onTextChange,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(2f)
+                        .aspectRatio(2f),
                 )
             } else {
                 TranslatedTextField(
@@ -88,7 +88,7 @@ fun TranslateTextField(
                     onCopyClick = onCopyClick,
                     onCloseClick = onCloseClick,
                     onSpeakerClick = onSpeakerClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -104,7 +104,7 @@ fun TranslatedTextField(
     onCopyClick: (String) -> Unit,
     onCloseClick: () -> Unit,
     onSpeakerClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         LanguageDisplay(language = fromLanguage)
@@ -116,16 +116,18 @@ fun TranslatedTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.copy),
                     contentDescription = stringResource(
-                        R.string.copy
+                        R.string.copy,
                     ),
-                    tint = LightBlue
+                    tint = LightBlue,
                 )
             }
             IconButton(onClick = onCloseClick) {
                 Icon(
-                    imageVector = Icons.Rounded.Close, contentDescription = stringResource(
-                        R.string.close
-                    ), tint = LightBlue
+                    imageVector = Icons.Rounded.Close,
+                    contentDescription = stringResource(
+                        R.string.close,
+                    ),
+                    tint = LightBlue,
                 )
             }
         }
@@ -142,16 +144,16 @@ fun TranslatedTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.copy),
                     contentDescription = stringResource(
-                        R.string.copy
+                        R.string.copy,
                     ),
-                    tint = LightBlue
+                    tint = LightBlue,
                 )
             }
             IconButton(onClick = onSpeakerClick) {
                 Icon(
                     imageVector = Icons.Rounded.Speaker,
                     contentDescription = stringResource(R.string.play_loud),
-                    tint = LightBlue
+                    tint = LightBlue,
                 )
             }
         }
@@ -164,7 +166,7 @@ private fun IdleTranslateTextField(
     isTranslating: Boolean,
     onTranslateClick: () -> Unit,
     onTextChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isFocused by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
@@ -175,7 +177,7 @@ private fun IdleTranslateTextField(
             modifier = Modifier
                 .fillMaxSize()
                 .onFocusChanged { isFocused = it.isFocused },
-            textStyle = TextStyle(color = MaterialTheme.colors.onSurface)
+            textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
         )
         if (fromText.isEmpty() && !isFocused) {
             // show hint
@@ -186,9 +188,8 @@ private fun IdleTranslateTextField(
             isLoading = isTranslating,
             onClick = onTranslateClick,
             modifier = Modifier.align(
-                Alignment.BottomEnd
-            )
+                Alignment.BottomEnd,
+            ),
         )
-
     }
 }

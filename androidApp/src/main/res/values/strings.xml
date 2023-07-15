@@ -13,4 +13,9 @@
     <string name="client_error">Client error</string>
     <string name="server_error">Server error</string>
     <string name="record_audio">Record Audio</string>
+    <string name="speech_recognition_is_not_available">Speech recognition is not available :(</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="apply">Apply</string>
+    <string name="record_again">Record again</string>
+    <string name="listening">Listening</string>
 </resources>
