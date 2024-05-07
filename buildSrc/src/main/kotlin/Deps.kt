@@ -39,10 +39,10 @@ object Deps {
     const val ktorIOS = "io.ktor:ktor-client-ios:$ktorVersion"
 
     // GRADLE PLUGINS
-    const val kotlinVersion = "1.7.21"
+    const val kotlinVersion = "1.8.20"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
-    private const val gradleVersion = "8.0.2"
+    private const val gradleVersion = "8.0.1"
     const val androidBuildTools = "com.android.tools.build:gradle:$gradleVersion"
 
     private const val sqlDelightGradleVersion = "1.5.3"
@@ -74,4 +74,7 @@ object Deps {
     const val composeTestManifest = "androidx.compose.ui:ui-test-manifest:$composeVersion"
 
     const val hiltTesting = "com.google.dagger:hilt-android-testing:$hiltVersion"
+
+    private const val rulesVersion = "1.4.0"
+    const val rules = "androidx.test:rules:$rulesVersion"
 }
